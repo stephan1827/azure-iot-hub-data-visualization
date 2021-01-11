@@ -118,6 +118,7 @@ $(document).ready(() => {
   // based on selection
   let needsAutoSelect = true;
   const deviceCount = document.getElementById('deviceCount');
+  const txtTemperature = document.getElementById('txtTemperature');
   const listOfDevices = document.getElementById('listOfDevices');
   function OnSelectionChange() {
     const device = trackedDevices.findDevice(listOfDevices[listOfDevices.selectedIndex].text);
@@ -148,13 +149,17 @@ $(document).ready(() => {
       const existingDeviceData = trackedDevices.findDevice(messageData.DeviceId);
 
       if (existingDeviceData) {
+        txtTemperature.innerHTML = `Last temperature value: ${parseFloat(messageData.IotData.temperature).toFixed(2)} °C`;
+        txtHumidity.innerHTML = `Last humidity value: ${parseFloat(messageData.IotData.humidity).toFixed(0)} %`;
         existingDeviceData.addData(messageData.MessageDate, messageData.IotData.temperature, messageData.IotData.humidity);
       } else {
         const newDeviceData = new DeviceData(messageData.DeviceId);
         trackedDevices.devices.push(newDeviceData);
         const numDevices = trackedDevices.getDevicesCount();
-        deviceCount.innerText = numDevices === 1 ? `${numDevices} device` : `${numDevices} devices`;
+        deviceCount.innerHTML = numDevices === 1 ? `&nbsp;${numDevices} device` : `&nbsp;${numDevices} devices`;
         newDeviceData.addData(messageData.MessageDate, messageData.IotData.temperature, messageData.IotData.humidity);
+        txtTemperature.innerHTML = `Last temperature value: ${parseFloat(messageData.IotData.temperature).toFixed(2)} °C`;
+        txtHumidity.innerHTML = `Last humidity value: ${parseFloat(messageData.IotData.humidity).toFixed(0)} %`;
 
         // add device to the UI list
         const node = document.createElement('option');
